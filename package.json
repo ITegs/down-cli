@@ -1,12 +1,26 @@
 {
   "name": "down-cli",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "A CLI for checking if a website is down or not",
+  "main": "src/index.js",
+  "bin": {
+    "down-cli": "bin/isdown",
+    "isdown": "bin/isdown"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "down",
+    "cli",
+    "isdown",
+    "is-down",
+    "isdown-cli",
+    "is-down-cli"
+  ],
   "author": "ITegs",
-  "license": "ISC"
+  "license": "MIT",
+  "dependencies": {
+    "esm": "^3.2.25"
+  }
 }
