@@ -1,5 +1,8 @@
 import arg from "arg";
 
+import figlet from "figlet";
+import gradient from "gradient-string";
+
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
@@ -20,7 +23,7 @@ function parseArgumentsIntoOptions(rawArgs) {
 
 export function cli(args) {
   let options = parseArgumentsIntoOptions(args);
-  console.log(options);
+  //   console.log(options);
   if (options.url === null) {
     console.log("Please provide a url to ping");
     return;
@@ -28,18 +31,43 @@ export function cli(args) {
   pingUrl(options);
 }
 
-// ping the url given in the options
 function pingUrl(options) {
-  console.log("Pinging url", options.url);
+  console.log(gradient.morning("Pinging " + options.url + "..."));
 
   fetch("https://" + options.url).then((response) => {
     if (options.verbose) {
       console.log(response);
     }
     if (response.ok) {
-      console.log("Success!");
+      figlet.text(
+        "Success!",
+        {
+          font: "Doom",
+        },
+        function (err, data) {
+          if (err) {
+            console.log("Something went wrong...");
+            console.dir(err);
+            return;
+          }
+          console.log(gradient.rainbow(data));
+        }
+      );
     } else {
-      console.log("Error pinging url");
+      figlet.text(
+        "Failed!",
+        {
+          font: "Doom",
+        },
+        function (err, data) {
+          if (err) {
+            console.log("Something went wrong...");
+            console.dir(err);
+            return;
+          }
+          console.log(gradient.instagram(data));
+        }
+      );
     }
   });
 }
