@@ -6,8 +6,6 @@ import gradient from "gradient-string";
 function parseArgumentsIntoOptions(rawArgs) {
   const args = arg(
     {
-      "--url": String,
-      "-u": "--url",
       "--verbose": Boolean,
       "-v": "--verbose",
     },
@@ -16,7 +14,7 @@ function parseArgumentsIntoOptions(rawArgs) {
     }
   );
   return {
-    url: args["--url"] || null,
+    url: args._[0],
     verbose: args["--verbose"] || false,
   };
 }
@@ -32,30 +30,50 @@ export function cli(args) {
 }
 
 function pingUrl(options) {
+  if (!options.url.startsWith("http")) {
+    options.url = "https://" + options.url;
+  }
   console.log(gradient.morning("Pinging " + options.url + "..."));
-
-  fetch("https://" + options.url).then((response) => {
-    if (options.verbose) {
-      console.log(response);
-    }
-    if (response.ok) {
-      figlet.text(
-        "Success!",
-        {
-          font: "Doom",
-        },
-        function (err, data) {
-          if (err) {
-            console.log("Something went wrong...");
-            console.dir(err);
-            return;
+  fetch(options.url)
+    .then((response) => {
+      if (options.verbose) {
+        console.log(response);
+      }
+      if (response.ok) {
+        figlet.text(
+          "UP!",
+          {
+            font: "Doom",
+          },
+          function (err, data) {
+            if (err) {
+              console.log("Something went wrong...");
+              console.dir(err);
+              return;
+            }
+            console.log(gradient.rainbow(data));
           }
-          console.log(gradient.rainbow(data));
-        }
-      );
-    } else {
+        );
+      } else {
+        figlet.text(
+          "DOWN!",
+          {
+            font: "Doom",
+          },
+          function (err, data) {
+            if (err) {
+              console.log("Something went wrong...");
+              console.dir(err);
+              return;
+            }
+            console.log(gradient.instagram(data));
+          }
+        );
+      }
+    })
+    .catch((error) => {
       figlet.text(
-        "Failed!",
+        "ERROR!",
         {
           font: "Doom",
         },
@@ -68,6 +86,11 @@ function pingUrl(options) {
           console.log(gradient.instagram(data));
         }
       );
-    }
-  });
+      if (options.verbose) {
+        console.log(error);
+      } else {
+        console.log("Error cause: " + error.cause.code);
+        console.log("For more information, use the --verbose flag.");
+      }
+    });
 }
